@@ -1,0 +1,94 @@
+version: "3.3"
+
+services:
+
+  mongodb:
+    image: mongo:4.2.3
+    container_name: mongodb
+    restart: unless-stopped
+    command: mongod --auth
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: Avaya123!
+      MONGO_INITDB_DATABASE: facesdb
+      MONGODB_DATA_DIR: /data/db
+      MONDODB_LOG_DIR: /dev/null 
+    volumes:
+      - mongodbdata:/data/db
+    ports:
+      - 127.0.0.1:27017:27017
+    networks:
+      - frontendnet
+      - apinet
+
+  avayafaces-api:
+    build:
+      context: api
+      dockerfile: Dockerfile
+    container_name: avayafaces-api
+    image: avayafaces-api:latest
+    ports:
+      - 5500:5500
+    networks:
+      - frontendnet
+      - apinet
+    restart: unless-stopped
+    environment:
+      APP_ENV: "prod"
+      APP_DEBUG: "False"
+      APP_PORT: 5500
+      MONGODB_DATABASE: facesdb
+      MONGODB_USERNAME: apiuser
+      MONGODB_PASSWORD: api123!
+      MONGODB_HOSTNAME: mongodb
+    volumes:
+      - apidata:/var/www
+    depends_on:
+      - mongodb
+
+  avayafaces-frontend:
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    container_name: avayafaces-frontend
+    image: avayafaces-frontend:latest
+    ports:
+      - 5501:5501
+    networks:
+      - frontendnet
+    restart: unless-stopped
+    depends_on:
+      - avayafaces-api
+
+  avayafaces-proxy:
+    build:
+      context: reverse_proxy
+      dockerfile: Dockerfile
+    container_name: avayafaces-proxy
+    image: avayafaces-proxy:latest
+    ports: 
+      - 8080:8080
+      - 443:443
+    networks:
+      - frontendnet
+      - proxynet
+    restart: unless-stopped
+    depends_on:
+      - avayafaces-frontend
+    
+networks:
+  frontendnet:
+    driver: bridge
+  apinet:
+    driver: bridge
+  proxynet:
+    driver: bridge
+
+
+volumes:
+  mongodbdata:     
+    driver: local
+  frontendata:
+    driver: local
+  apidata:
+    driver: local  

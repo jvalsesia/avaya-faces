@@ -1,0 +1,88 @@
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Avaya Faces</title>
+
+  <link href="/static/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+</head>
+
+<body>
+  <!-- As a heading -->
+  <nav class="navbar navbar-light bg-light">
+    <div class="container-fluid">
+      <span class="navbar-brand mb-0 h1">Avaya Faces Recognition</span>
+    </div>
+  </nav>
+
+
+  <div class="container">
+    <div class="row align-items-center">
+
+      <div class="col d-grid gap-2">
+        <div class="row">
+          <p class="err" id="errorMessage"></p>
+          <video id="cam_input" width="640" height="480" hidden></video>
+          <canvas id="canvas_output" width="640" height="480"></canvas>
+        </div>
+        <div class="row">
+          <div class="d-grid gap-2 col-6 mx-auto">
+            <button type="button" class="btn btn-primary" onclick="takeImageShot()">Image Shot</button>
+          </div>
+
+        </div>
+      </div>
+
+
+      <div class="col">
+        <div class="d-grid gap-2 col-6 mx-auto">
+          <figure class="figure">
+            <canvas id="image_shot" width="320" height="240"></canvas>
+          </figure>
+          <div>
+            <label id="recognized_userName"></label>
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="col">
+        <div class="row">
+          <div class="d-grid gap-2 d-md-block">
+
+            <input type="button" class="btn btn-primary" value="Recognize" onclick="submitScheduleToServer()">
+          </div>
+        </div>
+      </div>
+
+
+
+    </div>
+  </div>
+
+
+
+
+  <script src="/static/socket.io.js"
+    integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA=="
+    crossorigin="anonymous"></script>
+
+  <script src="/static/bootstrap.bundle.min.js"
+    integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
+    crossorigin="anonymous"></script>
+
+  <script src="/static/ws_messages.js"></script>
+  <script async src="/static/upload.js"></script>
+  <script async src="/static/face_detection.js"></script>
+
+
+  <script src="/static/utils.js"></script>
+
+
+  <script async src="/static/opencv.js" onload="openCvReady();"></script>
+</body>
+
+</html>
